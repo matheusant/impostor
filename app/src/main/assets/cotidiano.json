@@ -1,0 +1,25 @@
+{
+  "tema": "Cotidiano",
+  "rodadas": [
+    {
+      "grupo": "Diga algo que você faz quase todo dia de manhã logo após acordar.",
+      "impostor": "Diga algo que você faz quase toda noite logo antes de dormir."
+    },
+    {
+      "grupo": "Cite um objeto essencial que você sempre leva na mochila ou bolsa quando sai de casa.",
+      "impostor": "Cite um objeto que você quase sempre deixa em cima da mesa de cabeceira do quarto."
+    },
+    {
+      "grupo": "Qual é o melhor lugar para comer uma comida rápida e barata no meio de um dia corrido?",
+      "impostor": "Qual é o melhor lugar para ir comer quando você quer comemorar uma ocasião especial?"
+    },
+    {
+      "grupo": "Qual é o pior meio de transporte para se usar em uma cidade grande em horário de pico?",
+      "impostor": "Qual é o meio de transporte mais confortável para fazer uma viagem interestadual?"
+    },
+    {
+      "grupo": "Cite um eletrodoméstico que você considera indispensável na cozinha hoje em dia.",
+      "impostor": "Cite um eletrônico que você usa para se distrair ou relaxar na sala de casa."
+    }
+  ]
+}

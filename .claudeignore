@@ -1,0 +1,15 @@
+# Artefatos gerados e sensíveis — agents não devem ler nem editar
+app/build/
+build/
+.gradle/
+.kotlin/
+*.iml
+.idea/
+local.properties
+*.jks
+*.keystore
+*.apk
+*.aab
+# saídas temporárias de diagnóstico de UI
+shot*.png
+UI-PROBLEMS.md

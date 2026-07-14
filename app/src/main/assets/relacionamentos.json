@@ -1,0 +1,25 @@
+{
+  "tema": "Relacionamentos",
+  "rodadas": [
+    {
+      "grupo": "Qual é o lugar ideal para levar alguém em um primeiro encontro romântico inesquecível?",
+      "impostor": "Qual é o lugar ideal para ir com um grupo de amigos de longa data para conversar?"
+    },
+    {
+      "grupo": "Cite uma atitude em um relacionamento que você considera um sinal de alerta vermelho (Red Flag).",
+      "impostor": "Cite uma atitude em um relacionamento que demonstra que a pessoa é ciumenta ou insegura."
+    },
+    {
+      "grupo": "Qual é o melhor presente clássico para dar para o seu parceiro(a) no Dia dos Namorados?",
+      "impostor": "Qual é o melhor presente para dar para a sua mãe no Dia das Mães?"
+    },
+    {
+      "grupo": "Diga uma característica que você considera essencial para um casamento durar muitos anos.",
+      "impostor": "Diga uma característica que você valoriza muito em uma amizade verdadeira."
+    },
+    {
+      "grupo": "Qual é o pior assunto ou tema para se discutir durante o almoço de domingo com os sogros?",
+      "impostor": "Qual é o assunto mais polêmico para se discutir em um grupo de amigos em um bar?"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Impostor" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Impostor.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#0D0F12</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="windowSplashScreenIconBackgroundColor">#0D0F12</item>
+        <item name="postSplashScreenTheme">@style/Theme.Impostor</item>
+    </style>
+
+</resources>

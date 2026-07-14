@@ -1,0 +1,25 @@
+{
+  "tema": "Cultura Pop",
+  "rodadas": [
+    {
+      "grupo": "Diga o nome de uma criatura mágica de Harry Potter considerada perigosa ou assustadora.",
+      "impostor": "Diga o nome de uma criatura mágica de Harry Potter que possa ser mantida como animal de estimação."
+    },
+    {
+      "grupo": "Cite um herói do cinema ou quadrinhos conhecido por usar armadura ou muita tecnologia.",
+      "impostor": "Cite um herói do cinema ou quadrinhos conhecido por ter poderes puramente divinos ou mágicos."
+    },
+    {
+      "grupo": "Diga o nome de um vilão do cinema que quer dominar ou destruir o universo inteiro.",
+      "impostor": "Diga o nome de um vilão do cinema que age motivado por pura vingança pessoal."
+    },
+    {
+      "grupo": "Cite uma animação clássica da Disney baseada em contos de fadas ou princesas.",
+      "impostor": "Cite uma animação moderna da Pixar focada em sentimentos, objetos ou animais falantes."
+    },
+    {
+      "grupo": "Diga o nome de uma série de TV famosa focada em investigações criminais ou mistérios.",
+      "impostor": "Diga o nome de uma série de TV famosa focada em sobrevivência ou apocalipse."
+    }
+  ]
+}
