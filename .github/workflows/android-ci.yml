@@ -34,7 +34,7 @@ jobs:
                 "client_info": {
                   "mobilesdk_app_id": "1:123456789:android:123456",
                   "android_client_info": {
-                    "package_name": "com.example.mock"
+                    "package_name": "com.game.impostor"
                   }
                 },
                 "api_key": [
