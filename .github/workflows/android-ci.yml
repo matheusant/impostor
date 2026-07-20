@@ -1,5 +1,4 @@
 name: Android CI (Apenas Testes Unitários)
-run-name: 🚀 CI Unit Tests | "${{ github.event.head_commit.message }}"
 
 on:
   push:
