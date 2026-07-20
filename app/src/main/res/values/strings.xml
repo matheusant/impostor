@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Impostor</string>
+    <!--
+      ID do cliente web (OAuth 2.0) do projeto Firebase, usado pelo Google Sign-In
+      para pedir o idToken. Deixe vazio até configurar o provedor Google no console
+      Firebase; cole aqui o "Web client ID" (Client ID do tipo Web) do projeto.
+      Enquanto vazio, o botão "ENTRAR COM GOOGLE" exibe um aviso em vez de crashar.
+    -->
+    <string name="firebase_web_client_id" translatable="false">497010886044-s2mqqj84qr68l6vei68jtibjr27ga2cn.apps.googleusercontent.com</string>
 </resources>

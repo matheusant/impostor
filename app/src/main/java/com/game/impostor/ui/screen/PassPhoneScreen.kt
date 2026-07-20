@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.game.impostor.data.RoundData
+import com.game.impostor.domain.model.RoundData
 import com.game.impostor.ui.theme.SpyBlack
 import com.game.impostor.ui.theme.SpyGray
 import com.game.impostor.ui.theme.SpyGreen

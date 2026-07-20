@@ -1,4 +1,4 @@
-<div align="center">
+<div>
 
 # 🕵️ Linha_Cruzada
 
@@ -8,7 +8,7 @@
 ![Plataforma](https://img.shields.io/badge/Android-minSdk%2026-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)
-![Offline](https://img.shields.io/badge/100%25-offline-FF3333?style=flat-square)
+![Firebase](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-FFCA28?style=flat-square&logo=firebase&logoColor=black)
 
 </div>
 
@@ -16,8 +16,11 @@
 
 ## 📡 Sobre
 
-**Linha_Cruzada** é um jogo de festa **local** (passa-o-celular) — sem internet, sem contas,
-sem back-end. Um único aparelho é passado de mão em mão entre os jogadores.
+**Linha_Cruzada** é um jogo de festa **local** (passa-o-celular): um único aparelho é passado
+de mão em mão entre os jogadores. **A partida roda offline** — o estado do jogo e as categorias
+que você cria ficam no aparelho. O login de agente (**Firebase Auth** — Google ou e-mail/senha)
+abre a sessão, e os canais padrão vêm do **Cloud Firestore** com **cache offline** (Room), então
+continuam disponíveis mesmo sem rede.
 
 A cada partida o app sorteia **um impostor** entre os agentes e distribui duas perguntas
 **parecidas, mas sutilmente diferentes**:
@@ -34,11 +37,12 @@ recebeu a pergunta divergente** pelas respostas fora do padrão.
 
 ## 🎮 Como jogar
 
-1. **Setup** — escolha o número de agentes (3 a 8) e o canal (categoria).
-2. **Transmissão** — o app sorteia o impostor e uma rodada.
-3. **Passa-telefone** — cada agente lê sua diretriz em segredo e passa o aparelho.
-4. **Debate** — todos respondem em uma palavra, por vez, e discutem para achar o infiltrado.
-5. **Reboot** — finalize a missão e recomece com um novo sorteio.
+1. **Acesso** — autentique-se como agente (Google ou e-mail/senha). A sessão fica salva para as próximas partidas.
+2. **Setup** — escolha o número de agentes (3 a 8) e o canal (categoria).
+3. **Transmissão** — o app sorteia o impostor e uma rodada.
+4. **Passa-telefone** — cada agente lê sua diretriz em segredo e passa o aparelho.
+5. **Debate** — todos respondem em uma palavra, por vez, e discutem para achar o infiltrado.
+6. **Reboot** — finalize a missão e recomece com um novo sorteio.
 
 ## 📸 Telas
 
@@ -49,14 +53,18 @@ recebeu a pergunta divergente** pelas respostas fora do padrão.
 
 ## ✨ Funcionalidades
 
+- **Login de agente:** autenticação via **Firebase Auth** — Google e e-mail/senha —, com
+  validação de credenciais e sessão persistente.
+- **Canais na nuvem com cache offline:** os temas padrão vêm do **Cloud Firestore** e são
+  espelhados no **Room**; sem rede, o app usa o cache (ou os canais embutidos nos assets).
 - **Setup rápido:** slider de 3 a 8 agentes e seleção do canal ativo.
-- **Categorias padrão + customizadas:** use as embutidas ou crie as suas (nome + rodadas
-  `grupo`/`impostor`), com criação, edição e exclusão — persistidas localmente via **Room**.
+- **Categorias customizadas:** crie as suas (nome + rodadas `grupo`/`impostor`), com criação,
+  edição e exclusão — persistidas localmente via **Room**.
 - **Sorteio justo:** exatamente **um** impostor e **uma** rodada aleatória por partida.
 - **Revelação sigilosa por jogador:** o texto só aparece depois de decodificar; verde =
   canal seguro (grupo), vermelho = infiltrado (impostor).
 - **Debate + reboot:** tela de discussão e reinício limpo para a próxima rodada.
-- **100% offline:** nenhum dado sai do aparelho.
+- **Jogo offline:** o estado da partida e suas categorias nunca saem do aparelho.
 
 ## 🗂️ Categorias incluídas
 
@@ -87,16 +95,25 @@ Identidade visual de **espionagem**: fonte monospace, rótulos como `AGENTE 0X`,
 ## 🛠️ Stack técnica
 
 - **Linguagem:** Kotlin `2.2.10` (Java 11)
-- **UI:** Jetpack Compose (BOM `2026.02.01`) + Material 3
-- **Persistência:** Room `2.7.1` via KSP
+- **UI:** Jetpack Compose (BOM `2026.02.01`) + Material 3 + Navigation-Compose
+- **Arquitetura:** Clean Architecture + MVVM (`domain` / `data` / `di` / `ui`)
+- **DI:** Hilt `2.59.2` via KSP
+- **Nuvem:** Firebase Auth + Cloud Firestore (Google Sign-In via `play-services-auth`)
+- **Persistência local:** Room `2.7.1` via KSP (categorias customizadas + cache de temas)
 - **Build:** Android Gradle Plugin `9.2.1`, Gradle `9.4.1`
 - **SDK:** `minSdk 26` · `targetSdk 36` · `compileSdk 36`
 - **Namespace / applicationId:** `com.game.impostor`
-- Sem bibliotecas de rede, injeção de dependência ou analytics.
+- Sem analytics nem telemetria — a rede é usada **somente** para login e leitura de temas.
 
 ## 🚀 Como compilar e instalar
 
 **Pré-requisitos:** JDK 11+, Android SDK 36 e um device/emulador com Android 8.0 (API 26) ou superior.
+
+> **Firebase:** o login e os temas na nuvem exigem um projeto Firebase configurado — um
+> `app/google-services.json` válido (não versionado), provedores de Auth (Google + e-mail/senha)
+> habilitados, o SHA-1 do app registrado, o *web client id* em
+> `app/src/main/res/values/strings.xml` e as Security Rules do Firestore exigindo
+> `request.auth != null`. Sem isso, o app compila normalmente, mas o login não conclui.
 
 | Objetivo | PowerShell | bash |
 |---|---|---|
@@ -115,8 +132,10 @@ Planejado (ainda **não** implementado):
 
 ## 🔒 Privacidade
 
-Linha_Cruzada é **totalmente offline**: não usa rede, não coleta dados, não tem anúncios nem
-telemetria e não pede permissões além do necessário para o jogo local.
+Linha_Cruzada **não tem anúncios, analytics nem telemetria**. A única permissão é `INTERNET`,
+usada **exclusivamente** para o Firebase Auth (login) e a leitura de temas no Cloud Firestore.
+O estado das partidas e as categorias que você cria **ficam no aparelho** (Room) — nenhum dado
+de jogo é enviado para a nuvem.
 
 ---
 

@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.game.impostor.ui.state.CategorySelection
 import com.game.impostor.ui.theme.SpyBlack
 import com.game.impostor.ui.theme.SpyGray
 import com.game.impostor.ui.theme.SpyGreen

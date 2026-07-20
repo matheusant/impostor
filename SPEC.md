@@ -16,7 +16,9 @@ tenta identificar o impostor pelas respostas divergentes.
 - **Idioma da interface:** português.
 - **Estética:** espionagem — fonte monospace, rótulos como "AGENTE 0X", "INSPEÇÃO DE
   SEGURANÇA", "CANAL SEGURO", cores neon sobre fundo escuro.
-- **Sem back-end, sem rede, sem conta.** Todo estado é local (memória + Room).
+- **Autenticação e temas na nuvem via Firebase.** Login via Firebase Auth (Google e
+  e-mail/senha); temas padrão vêm do Cloud Firestore com **cache offline** (Room) como
+  fallback. O estado de jogo e as categorias customizadas continuam locais (memória + Room).
 
 ## 2. Usuários e uso
 
@@ -49,7 +51,7 @@ cada um lê sua diretriz em segredo → discutir → reiniciar.
 - **Critério de aceitação:** salvar uma categoria com nome "Festa" e 2 rodadas cria 1
   `CustomCategoryEntity` + 2 `CustomRoundEntity` associados; ela aparece na lista.
 
-### 4.3 Sorteio (regras centrais do jogo — `GameEngine`)
+### 4.3 Sorteio (regras centrais do jogo — `GameViewModel` + `domain/usecase`)
 - **Impostor:** exatamente **um** índice em `[0, totalPlayers)` escolhido aleatoriamente.
 - **Rodada:** uma `RoundData` escolhida aleatoriamente entre as rodadas da categoria ativa.
 - **Critério de aceitação (testável):** para `totalPlayers = 4`, o índice do impostor
@@ -67,9 +69,10 @@ cada um lê sua diretriz em segredo → discutir → reiniciar.
 - Tela de discussão + botão reiniciar (limpa o back stack e volta ao setup).
 
 ### 4.6 Carregamento de dados
-- Categorias padrão: parse de JSON em `assets/` (`tema`, `rodadas[]`). Em erro de arquivo,
-  retorna um `ThemeConfig` de erro seguro (não crasha).
-- Categorias customizadas: `Flow` do Room exposto como `StateFlow` no `ViewModel`.
+- Categorias padrão: parse de JSON em `assets/` (`tema`, `rodadas[]`) via `ThemeJsonParser` (puro),
+  lido pelo `ThemeRepository`. Em erro de arquivo, **não crasha**: o repository devolve rodadas vazias
+  (e iniciar não avança, §4.1).
+- Categorias customizadas: `Flow` do Room, atrás de `CategoryRepository`, exposto como `StateFlow` no `CategoryViewModel`.
 
 ## 5. Schema de dados (contratos exatos)
 
@@ -83,7 +86,7 @@ cada um lê sua diretriz em segredo → discutir → reiniciar.
 }
 ```
 Regras: `tema` não vazio; `rodadas` com ≥ 1 item; cada item com `grupo` e `impostor` não
-vazios. Novo JSON **deve** ser registrado em `DEFAULT_CATEGORIES` (`GameEngine.kt`).
+vazios. Novo JSON **deve** ser registrado em `DEFAULT_CATEGORIES` (`domain/model/DefaultCategory.kt`).
 
 **Room:** `custom_categories(id, name)` 1—N `custom_rounds(id, categoryId, grupo, impostor)`.
 Leitura via `getAllWithRounds(): Flow<List<CustomCategoryWithRounds>>` ordenada por `name ASC`.
@@ -91,20 +94,25 @@ Leitura via `getAllWithRounds(): Flow<List<CustomCategoryWithRounds>>` ordenada 
 ## 6. Casos de borda (o que acontece quando dá errado)
 
 - Categoria sem rodadas → iniciar não avança (§4.1).
-- Arquivo JSON ausente/corrompido → `ThemeConfig` de erro, sem crash (§4.6).
+- Arquivo JSON ausente/corrompido → sem crash; rodadas vazias, logo iniciar não avança (§4.6, §4.1).
 - Excluir a categoria ativa → seleção volta para "Cotidiano" (§4.2).
 - `totalPlayers` alterado depois do sorteio não deve reindexar o impostor da rodada em curso.
-- Botão voltar (BackHandler): recua uma tela no back stack quando há histórico.
+- Botão voltar: recua um destino (Navigation-Compose); no destino inicial, sai do app.
 
 ## 7. Stack e dependências explícitas
 
 Ver `CLAUDE.md` (fonte única de versões). Resumo: Kotlin 2.2.10, Compose BOM 2026.02.01,
-Material 3, Room 2.7.1 (KSP), AGP 9.2.1, minSdk 26 / targetSdk 36. Sem libs de rede/DI/analytics.
+Material 3, Room 2.7.1 (KSP), AGP 9.2.1, minSdk 26 / targetSdk 36. Inclui Firebase
+(Auth + Cloud Firestore) e Google Sign-In (`play-services-auth`) para login e temas na
+nuvem; **sem** analytics/telemetria.
+
+**Arquitetura:** Clean Architecture + MVVM — camadas `domain/ data/ di/ ui/`, DI com **Hilt**
+(via KSP) e navegação por **Navigation-Compose** (detalhes em `CLAUDE.md`).
 
 ## 8. Fora de escopo (não construir sem nova SPEC)
 
-- Multiplayer online / rede / contas / nuvem.
-- Back-end ou API.
+- Multiplayer online de partidas (jogo em rede entre aparelhos).
+- Back-end/API próprios (usa-se o Firebase gerenciado — Auth + Firestore — para login e temas).
 - Anúncios, analytics, telemetria.
 - Suporte a idiomas além do português (a menos que uma task de i18n seja adicionada ao PLAN).
 - Mais de um impostor por rodada (a menos que explicitamente planejado).

@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.game.impostor.data.CustomCategoryWithRounds
+import com.game.impostor.domain.model.CategoriaCustom
 import com.game.impostor.ui.theme.SpyBlack
 import com.game.impostor.ui.theme.SpyGray
 import com.game.impostor.ui.theme.SpyGreen
@@ -26,18 +26,18 @@ import com.game.impostor.ui.theme.SpyTextWhite
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryFormScreen(
-    initial: CustomCategoryWithRounds? = null,
+    initial: CategoriaCustom? = null,
     onSave: (String, List<Pair<String, String>>) -> Unit,
     onBack: () -> Unit
 ) {
     val isEditing = initial != null
-    var categoryName by remember(initial?.category?.id) {
-        mutableStateOf(initial?.category?.name ?: "")
+    var categoryName by remember(initial?.id) {
+        mutableStateOf(initial?.nome ?: "")
     }
-    var rounds by remember(initial?.category?.id) {
+    var rounds by remember(initial?.id) {
         mutableStateOf(
             if (initial != null)
-                initial.rounds.map { Pair(it.grupo, it.impostor) }
+                initial.rodadas.map { Pair(it.grupo, it.impostor) }
             else
                 listOf(Pair("", ""))
         )

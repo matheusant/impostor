@@ -18,7 +18,9 @@ recebeu a pergunta diferente. Interface em **português**, estética de **espion
 - **Linguagem:** Kotlin `2.2.10`
 - **UI:** Jetpack Compose (BOM `2026.02.01`) + Material 3
 - **Persistência:** Room `2.7.1` via **KSP** (não kapt para novo código)
-- **Arquitetura:** telas Composable + `GameEngine` (navegação por back stack em memória) + `CategoryViewModel` (`AndroidViewModel`) + Room
+- **DI:** **Hilt** `2.59.2` via **KSP** (`@HiltAndroidApp`/`@AndroidEntryPoint`/`@HiltViewModel`; módulos em `di/`)
+- **Navegação:** **Navigation-Compose** (`NavHost` + `Routes` em `ui/navigation`)
+- **Arquitetura:** **Clean Architecture + MVVM** — `domain` (model/repository/usecase, puro, sem Android) + `data` (Room/Firestore + impls de repository + mappers) + `ui` (Compose stateless + `GameViewModel`/`CategoryViewModel` expondo `StateFlow<UiState>`) + `di` (Hilt). A dependência aponta sempre para dentro (`ui→domain`, `data→domain`).
 - **Build:** Android Gradle Plugin `9.2.1`, Gradle Wrapper, `minSdk 26`, `targetSdk 36`, `compileSdk 36`
 - **Namespace / applicationId:** `com.game.impostor`
 - **JVM:** Java 11 (source/target compatibility)
@@ -29,16 +31,24 @@ recebeu a pergunta diferente. Interface em **português**, estética de **espion
 ```
 app/src/main/
 ├── java/com/game/impostor/
-│   ├── MainActivity.kt          # entry point; instala splash, aplica ImpostorTheme, chama GameEngine
-│   ├── data/                    # camada de dados (Room + modelos)
+│   ├── MainActivity.kt          # entry point (@AndroidEntryPoint); splash + ImpostorTheme + ImpostorApp
+│   ├── ImpostorApplication.kt   # @HiltAndroidApp (raiz do grafo de DI)
+│   ├── domain/                  # regra de negócio pura (sem Android)
+│   │   ├── model/                # ThemeConfig, RoundData, CategoriaCustom, DefaultCategory
+│   │   ├── repository/           # interfaces: CategoryRepository, ThemeRepository
+│   │   └── usecase/              # SortearImpostor/SortearRodada + casos de uso de categoria
+│   ├── data/                    # implementação de dados
 │   │   ├── AppDatabase.kt        # Room DB singleton ("impostor_db")
 │   │   ├── CategoryDao.kt        # DAO (Flow para leitura reativa)
 │   │   ├── CustomCategoryEntity.kt / CustomRoundEntity.kt / CustomCategoryWithRounds.kt
-│   │   └── ThemeConfig.kt        # data classes ThemeConfig / RoundData (categorias padrão em JSON)
+│   │   ├── mapper/               # ThemeJsonParser (parse puro do JSON de assets)
+│   │   └── repository/           # CategoryRepositoryImpl, ThemeRepositoryImpl
+│   ├── di/                      # módulos Hilt (DatabaseModule, RepositoryModule, DispatcherModule)
 │   └── ui/
-│       ├── CategoryViewModel.kt  # StateFlow de categorias customizadas; save/update/delete
-│       ├── screen/               # telas Composable + GameEngine (orquestrador de navegação)
-│       │   ├── GameEngine.kt      # backStack + estado do jogo + carregamento de categorias
+│       ├── navigation/           # ImpostorNavHost (NavHost + Routes) + ImpostorApp
+│       ├── viewmodel/            # GameViewModel, CategoryViewModel (@HiltViewModel)
+│       ├── state/                # GameUiState, CategorySelection
+│       ├── screen/               # telas Composable stateless
 │       │   ├── SetupScreen.kt / CategorySelectScreen.kt / CategoryFormScreen.kt
 │       │   └── PassPhoneScreen.kt / GamePlayScreen.kt
 │       └── theme/                # Color.kt (paleta Spy*), Theme.kt, Type.kt

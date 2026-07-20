@@ -18,7 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.game.impostor.data.CustomCategoryWithRounds
+import com.game.impostor.domain.model.CategoriaCustom
+import com.game.impostor.domain.model.ThemeConfig
+import com.game.impostor.ui.state.CategorySelection
 import com.game.impostor.ui.theme.SpyGray
 import com.game.impostor.ui.theme.SpyGreen
 import com.game.impostor.ui.theme.SpyRed
@@ -26,12 +28,13 @@ import com.game.impostor.ui.theme.SpyTextWhite
 
 @Composable
 fun CategorySelectScreen(
-    customCategories: List<CustomCategoryWithRounds>,
+    remoteThemes: List<ThemeConfig>,
+    customCategories: List<CategoriaCustom>,
     selectedCategory: CategorySelection,
-    onSelectDefault: (DefaultCategory) -> Unit,
-    onSelectCustom: (CustomCategoryWithRounds) -> Unit,
+    onSelectRemote: (ThemeConfig) -> Unit,
+    onSelectCustom: (CategoriaCustom) -> Unit,
     onDeleteCustom: (Int) -> Unit,
-    onEditCustom: (CustomCategoryWithRounds) -> Unit,
+    onEditCustom: (CategoriaCustom) -> Unit,
     onCreateNew: () -> Unit,
     onBack: () -> Unit
 ) {
@@ -99,27 +102,27 @@ fun CategorySelectScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(DEFAULT_CATEGORIES) { cat ->
-                val isSelected = selectedCategory is CategorySelection.Default &&
-                        selectedCategory.category == cat
+            items(remoteThemes, key = { it.tema }) { tema ->
+                val isSelected = selectedCategory !is CategorySelection.Custom &&
+                        selectedCategory.displayName == tema.tema
                 CategoryCard(
-                    name = cat.name,
+                    name = tema.tema,
                     isSelected = isSelected,
                     isCustom = false,
-                    onSelect = { onSelectDefault(cat) },
+                    onSelect = { onSelectRemote(tema) },
                     onDeleteRequest = {},
                     onEditRequest = {}
                 )
             }
-            items(customCategories, key = { it.category.id }) { cat ->
+            items(customCategories, key = { it.id }) { cat ->
                 val isSelected = selectedCategory is CategorySelection.Custom &&
-                        selectedCategory.id == cat.category.id
+                        selectedCategory.id == cat.id
                 CategoryCard(
-                    name = cat.category.name,
+                    name = cat.nome,
                     isSelected = isSelected,
                     isCustom = true,
                     onSelect = { onSelectCustom(cat) },
-                    onDeleteRequest = { deleteConfirmId = cat.category.id },
+                    onDeleteRequest = { deleteConfirmId = cat.id },
                     onEditRequest = { onEditCustom(cat) }
                 )
             }

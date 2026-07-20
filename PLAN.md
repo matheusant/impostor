@@ -6,19 +6,119 @@
 > Só o orquestrador marca os checkboxes. Base (scaffold) já existe e o smoke test passa
 > (`assembleDebug` + `testDebugUnitTest`).
 
+## Sprint 0 — Arquitetura (Clean + MVVM + Hilt) + Firebase (auth + temas) (PRIORIDADE — antes da Sprint 1)
+
+> **Escopo expandido (aprovado pelo usuário).** Além do Firebase (login **Google** + **e-mail/senha**
+> e Cloud Firestore com **cache offline** via Room), a Sprint 0 primeiro reestrutura o app em
+> **Clean Architecture + MVVM** com **Hilt** (DI), **camada de domínio (UseCases)**, migração do
+> `GameEngine` para **`GameViewModel`** e **Navigation-Compose** — com um **baseline de testes**
+> (unitários + instrumentados). Decisões travadas: pacotes `domain/ data/ di/ ui/`; Navigation-Compose.
+> **Mudança de escopo aprovada:** rede via Firebase contraria o "100% offline" original — `SPEC.md`
+> e `rules/seguranca.md` já permitem. `CLAUDE.md` e `rules/*` foram atualizados para a nova arquitetura.
+>
+> Pré-requisitos de setup (uma vez):
+> - [x] Version catalog: `firebase-bom`, `firebase-auth`, `firebase-firestore`, `play-services-auth`,
+>   Hilt (`hilt-android`/`hilt-android-compiler`/`hilt-navigation-compose`, `2.59.2`), `navigation-compose`,
+>   libs de teste (`kotlinx-coroutines-test`, `turbine`, `arch-core-testing`, `hilt-android-testing`, `room-testing`, `org.json`).
+> - [x] Plugins `com.google.gms.google-services` + `com.google.dagger.hilt.android`; `app/google-services.json` presente.
+> - [x] Permissão `INTERNET` no `AndroidManifest.xml`; `ImpostorApplication` (`@HiltAndroidApp`) registrada.
+> - [ ] Configurar Firestore Security Rules exigindo `request.auth != null` (no console Firebase, na Fase 0.B).
+
+### Fase 0.0 — Fundação: Clean Architecture + MVVM + Hilt + Navigation (CONCLUÍDA)
+> Dependências: pré-requisitos de setup. Objetivo: endireitar a base **preservando o comportamento atual**
+> (setup → passa-telefone → game-play; CRUD de categorias).
+
+#### Task 0.0.1 — Hilt + camadas base (domain/data/di) + CategoryViewModel
+- [x] `domain/model` (ThemeConfig, RoundData, CategoriaCustom, DefaultCategory); `domain/repository`
+  (CategoryRepository, ThemeRepository); `domain/usecase` (categoria); `data/repository` (impls);
+  `di/` (DatabaseModule, RepositoryModule, DispatcherModule).
+- [x] `CategoryViewModel` → `@HiltViewModel` puro (`StateFlow<List<CategoriaCustom>>`), via UseCases (não mais `AndroidViewModel`).
+- Testes: [x] `CategoryRepositoryImplTest` (fake DAO: observar/salvar/atualizar/excluir);
+  [x] (instrumentado) `DiGraphSmokeTest` monta o grafo de DI e provê os repositories.
+
+#### Task 0.0.2 — GameEngine → GameViewModel + UseCases de sorteio + Navigation-Compose
+- [x] `domain/usecase/SortearImpostorUseCase` e `SortearRodadaUseCase` (puros, `Random` injetável) — **cobre a antiga Task 1.1**.
+- [x] `data/mapper/ThemeJsonParser` (parse puro do JSON) + `ThemeRepositoryImpl` (I/O de assets isolado).
+- [x] `GameViewModel` (`@HiltViewModel`, `GameUiState`); `ui/navigation/ImpostorNavHost` (NavHost + `Routes`) + `ImpostorApp`;
+  telas viraram destinos stateless; `GameEngine.kt` removido.
+- Testes: [x] `SortearImpostorUseCaseTest`, `SortearRodadaUseCaseTest`, `ThemeJsonParserTest`, `GameViewModelTest` (JVM);
+  [x] (instrumentado) `ThemeRepositoryInstrumentedTest` (assets reais parseiam). [ ] (instrumentado) navegação E2E setup→pass_phone→game_play (pendente device).
+
+#### Gate 0.0 (atingido)
+- [x] `./gradlew assembleDebug` verde; [x] `./gradlew testDebugUnitTest` verde (18 testes);
+  [x] `./gradlew assembleDebugAndroidTest` compila os instrumentados. [ ] `connectedDebugAndroidTest` — requer device/emulador.
+
+### Fase 0.A — Autenticação Firebase (Google + e-mail/senha) (CONCLUÍDA — código; login manual pendente de device + config Firebase)
+> Dependências: Fase 0.0 (arquitetura) + pré-requisitos de setup
+> Paralelismo: nenhum (task única)
+> Caminhos seguem a nova arquitetura (Clean): validação em `domain/usecase`, repository em `domain/repository` + impl em `data/repository`, tela em `ui/screen` + `ui/viewmodel`, navegação em `ui/navigation`.
+
+#### Task 0.1 — Login com Google e e-mail/senha
+- Agent: compose-ui
+- Input: SPEC §1 (autenticação); Firebase Auth; `GameEngine.kt` (back stack/navegação); paleta `Spy*`
+- Output:
+  - `domain/usecase/ValidarCredenciaisUseCase.kt` (puro, testável):
+    `operator fun invoke(email: String, senha: String): CredsValidationResult`
+    (sealed `Valido` / `Invalido(mensagens: List<String>)`; e-mail com formato válido, senha ≥ 6).
+  - `domain/repository/AuthRepository.kt` (interface: `usuarioAtual: String?`, `suspend fun entrarComEmail(...)`,
+    `suspend fun cadastrarComEmail(...)`, `suspend fun entrarComGoogle(idToken)`, `fun sair()`, devolvendo
+    `sealed AuthResult { Sucesso(uid) / Erro(msg) }`) + `data/repository/FirebaseAuthRepository.kt` (impl sobre `FirebaseAuth`);
+    `di/FirebaseModule` provê `FirebaseAuth`. Nada de `Context`/Firebase no `domain/`.
+  - `ui/viewmodel/LoginViewModel.kt` (`@HiltViewModel`, `LoginUiState`) + `ui/screen/LoginScreen.kt` (stateless, monospace,
+    paleta `Spy*`): campos e-mail/senha + botões "ENTRAR", "CADASTRAR", "ENTRAR COM GOOGLE"; mensagens de erro; sem hardcode de cor.
+  - `ui/navigation/ImpostorNavHost`: sem usuário autenticado, `LoginScreen` é o destino inicial; após sucesso → `SetupScreen`.
+- Testes críticos:
+  - [x] `validarCredenciais("", "123456")` → `Invalido` (mensagem sobre e-mail)
+  - [x] `validarCredenciais("a@b.com", "123")` → `Invalido` (senha < 6)
+  - [x] `validarCredenciais("a@b.com", "123456")` → `Valido`
+  - [x] (instrumentado) `LoginScreen` exibe os três botões e o campo de e-mail (escrito e compila; `connectedDebugAndroidTest` pendente de device)
+
+### Fase 0.B — Temas via Firestore com cache offline
+> Dependências: Fase 0.A (Firestore exige `request.auth != null`)
+> Paralelismo: nenhum (task única)
+
+#### Task 0.2 — Buscar temas do Firestore com fallback offline (Room) (CONCLUÍDA — código; refresh reativo ao login; execução em device pendente)
+- Agent: data-room
+- Input: schema de §5 do `SPEC.md`; `domain/model` (`ThemeConfig`/`RoundData`); `AuthRepository` (Task 0.1); `AppDatabase`
+- Output:
+  - `data/remote/FirestoreThemeMapper.kt` (puro, testável):
+    `fun documentoParaThemeConfig(tema: String?, rodadas: List<Map<String, Any?>>?): ThemeConfig?`
+    (aplica §5: `tema` não vazio, ≥ 1 rodada com `grupo`/`impostor` não vazios; caso inválido → `null`).
+  - `data/RemoteThemeEntity.kt` + `RemoteRoundEntity.kt`: entidades Room de **cache** dos temas remotos
+    (separadas de `custom_*`) + `RemoteThemeDao` lendo em `Flow`.
+  - Atualizar `AppDatabase`: **bumpe a `version`** e adicione `Migration` para as novas tabelas (nunca `fallbackToDestructiveMigration` sem aprovação).
+  - Evoluir `domain/repository/ThemeRepository` com `fun observarTemas(): Flow<List<ThemeConfig>>` +
+    `data/repository/ThemeRepositoryImpl` (ou `FirestoreThemeRepositoryImpl`): lê a collection `temas` do Firestore
+    (mapeando via `FirestoreThemeMapper`), atualiza o cache Room e emite; **offline**: emite do cache; sem cache: assets (`DEFAULT_CATEGORIES`).
+    Exposto por `domain/usecase/ObservarTemasUseCase` e consumido pelo `GameViewModel`/UI.
+- Testes críticos:
+  - [x] `documentoParaThemeConfig("Cotidiano", [rodadaValida])` → `ThemeConfig` com o tema e 1 rodada
+  - [x] `documentoParaThemeConfig("Cotidiano", null)` → `null` (doc sem `rodadas` é descartado)
+  - [x] `documentoParaThemeConfig("", [rodadaValida])` → `null` (tema vazio, §5)
+  - [x] (instrumentado) sem rede, `observarTemas()` emite os temas gravados no cache do Room (escrito e compila; `connectedDebugAndroidTest` pendente de device)
+
+### Gate da Sprint 0
+- [x] `./gradlew testDebugUnitTest` verde — 31 testes (sorteio/validação, mappers e ViewModels; inclui `ValidarCredenciaisUseCase`, `LoginViewModel` e `FirestoreThemeMapper`).
+- [x] `./gradlew assembleDebug` verde com `google-services.json` presente; [x] `assembleDebugAndroidTest` compila os instrumentados.
+- [ ] (Com device) login Google e e-mail/senha funcionam e os temas do Firestore aparecem; em modo avião, aparecem os do cache. — **pendente de device + config no console Firebase**.
+- **Status:** Fases 0.0, 0.A e 0.B com código concluído e gates de terminal verdes. Pendências externas: (1) config manual no console Firebase (habilitar provedores Auth, `firebase_web_client_id`, Security Rules `request.auth != null`, criar collection `temas`); (2) device/emulador para `connectedDebugAndroidTest` e validação manual de login. Backlog do review: teste de `MIGRATION_1_2` com `MigrationTestHelper` (exige `exportSchema=true`).
+
+---
+
 ## Sprint 1 — Rodada com tempo, exportar/importar categorias e lógica de jogo testável, com `assembleDebug` e `testDebugUnitTest` verdes.
+
+> **Ajuste de caminhos (nova arquitetura, pós-Sprint 0).** Lógica pura vive em
+> `com.game.impostor.domain.usecase` (não mais `game/`); modelos em `domain/model`;
+> validação/serialização como UseCases/mappers testáveis. A **Task 1.1 (sorteio) já foi
+> implementada na Fase 0.0** (`SortearImpostorUseCase`/`SortearRodadaUseCase`).
 
 ### Fase 1 — Núcleo de lógica pura testável
 > Dependências: nenhuma
 > Paralelismo: Task 1.1 e Task 1.2 rodam em paralelo (arquivos diferentes)
 
-#### Task 1.1 — Extrair lógica de sorteio para função pura
-- Agent: game-logic
-- Input: `GameEngine.kt` (regras atuais de sorteio de impostor e de rodada)
-- Output: novo arquivo `app/src/main/java/com/game/impostor/game/GameLogic.kt` com:
-  - `fun sortearImpostor(totalPlayers: Int, rng: kotlin.random.Random = Random): Int`
-  - `fun sortearRodada(rodadas: List<RoundData>, rng: kotlin.random.Random = Random): RoundData?`
-  `GameEngine.kt` passa a delegar a essas funções (sem mudar comportamento).
+#### Task 1.1 — Extrair lógica de sorteio para função pura — **CONCLUÍDA na Fase 0.0**
+- Implementada como `domain/usecase/SortearImpostorUseCase` e `SortearRodadaUseCase` (puros, `Random` injetável),
+  consumidos pelo `GameViewModel`. Testes em `SortearImpostorUseCaseTest`/`SortearRodadaUseCaseTest`.
 - Testes críticos:
   - [ ] `sortearImpostor(4, Random(0))` retorna um índice em `0..3` (determinístico com seed)
   - [ ] `sortearRodada(emptyList())` retorna `null` (categoria vazia não avança)
@@ -27,8 +127,8 @@
 #### Task 1.2 — Validador puro de categoria customizada
 - Agent: data-room
 - Input: regras de §5 do `SPEC.md` (tema/rodadas não vazios)
-- Output: novo arquivo `app/src/main/java/com/game/impostor/data/CategoryValidator.kt` com
-  `fun validarCategoria(nome: String, rodadas: List<Pair<String, String>>): CategoryValidationResult`
+- Output: novo arquivo `app/src/main/java/com/game/impostor/domain/usecase/ValidarCategoriaUseCase.kt` com
+  `operator fun invoke(nome: String, rodadas: List<Pair<String, String>>): CategoryValidationResult`
   (sealed result: `Valido` ou `Invalido(mensagens: List<String>)`)
 - Testes críticos:
   - [ ] nome vazio → `Invalido` com mensagem sobre nome
@@ -52,7 +152,7 @@
 #### Task 2.2 — Máquina de contagem regressiva da rodada
 - Agent: game-logic
 - Input: SPEC §4 (rodada); requisito novo: rodada pode ter tempo opcional
-- Output: novo arquivo `app/src/main/java/com/game/impostor/game/RoundTimer.kt` com um
+- Output: novo arquivo `app/src/main/java/com/game/impostor/domain/usecase/RoundTimer.kt` com um
   estado puro `data class TimerState(val restanteSeg: Int, val rodando: Boolean)` e
   `fun tick(state: TimerState): TimerState` (decrementa até 0, não fica negativo)
 - Testes críticos:
