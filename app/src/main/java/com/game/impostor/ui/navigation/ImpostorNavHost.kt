@@ -132,6 +132,13 @@ fun ImpostorApp(
                 onOpenCategories = { navController.navigate(Routes.CATEGORY_SELECT) },
                 onStart = {
                     if (gameViewModel.iniciar()) navController.navigate(Routes.PASS_PHONE)
+                },
+                onSair = {
+                    loginViewModel.sair()
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
         }

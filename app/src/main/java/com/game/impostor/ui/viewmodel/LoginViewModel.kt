@@ -30,6 +30,8 @@ class LoginViewModel @Inject constructor(
 
     fun entrar() = autenticarComEmail { email, senha -> authRepository.entrarComEmail(email, senha) }
 
+    fun sair() = sairDoApp()
+
     fun cadastrar() = autenticarComEmail { email, senha -> authRepository.cadastrarComEmail(email, senha) }
 
     fun entrarComGoogle(idToken: String) {
@@ -62,5 +64,10 @@ class LoginViewModel @Inject constructor(
             is AuthResult.Sucesso -> _uiState.update { it.copy(carregando = false, autenticado = true) }
             is AuthResult.Erro -> _uiState.update { it.copy(carregando = false, erros = listOf(resultado.mensagem)) }
         }
+    }
+
+    private fun sairDoApp() {
+        authRepository.sair()
+        _uiState.update { it.copy(email = "", senha = "", autenticado = false) }
     }
 }

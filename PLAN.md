@@ -22,7 +22,7 @@
 >   libs de teste (`kotlinx-coroutines-test`, `turbine`, `arch-core-testing`, `hilt-android-testing`, `room-testing`, `org.json`).
 > - [x] Plugins `com.google.gms.google-services` + `com.google.dagger.hilt.android`; `app/google-services.json` presente.
 > - [x] Permissão `INTERNET` no `AndroidManifest.xml`; `ImpostorApplication` (`@HiltAndroidApp`) registrada.
-> - [ ] Configurar Firestore Security Rules exigindo `request.auth != null` (no console Firebase, na Fase 0.B).
+> - [x] Configurar Firestore Security Rules exigindo `request.auth != null` (no console Firebase, na Fase 0.B).
 
 ### Fase 0.0 — Fundação: Clean Architecture + MVVM + Hilt + Navigation (CONCLUÍDA)
 > Dependências: pré-requisitos de setup. Objetivo: endireitar a base **preservando o comportamento atual**
@@ -42,11 +42,11 @@
 - [x] `GameViewModel` (`@HiltViewModel`, `GameUiState`); `ui/navigation/ImpostorNavHost` (NavHost + `Routes`) + `ImpostorApp`;
   telas viraram destinos stateless; `GameEngine.kt` removido.
 - Testes: [x] `SortearImpostorUseCaseTest`, `SortearRodadaUseCaseTest`, `ThemeJsonParserTest`, `GameViewModelTest` (JVM);
-  [x] (instrumentado) `ThemeRepositoryInstrumentedTest` (assets reais parseiam). [ ] (instrumentado) navegação E2E setup→pass_phone→game_play (pendente device).
+  [x] (instrumentado) `ThemeRepositoryInstrumentedTest` (assets reais parseiam). [ ] (instrumentado) navegação E2E setup→pass_phone→game_play (não escrito; coberto pela Task 4.1 da Sprint 1).
 
 #### Gate 0.0 (atingido)
 - [x] `./gradlew assembleDebug` verde; [x] `./gradlew testDebugUnitTest` verde (18 testes);
-  [x] `./gradlew assembleDebugAndroidTest` compila os instrumentados. [ ] `connectedDebugAndroidTest` — requer device/emulador.
+  [x] `./gradlew assembleDebugAndroidTest` compila os instrumentados. [x] `connectedDebugAndroidTest` verde (5 instrumentados, 0 falhas — emulador `Pixel_6_Pro` API 15, 2026-07-21).
 
 ### Fase 0.A — Autenticação Firebase (Google + e-mail/senha) (CONCLUÍDA — código; login manual pendente de device + config Firebase)
 > Dependências: Fase 0.0 (arquitetura) + pré-requisitos de setup
@@ -71,7 +71,7 @@
   - [x] `validarCredenciais("", "123456")` → `Invalido` (mensagem sobre e-mail)
   - [x] `validarCredenciais("a@b.com", "123")` → `Invalido` (senha < 6)
   - [x] `validarCredenciais("a@b.com", "123456")` → `Valido`
-  - [x] (instrumentado) `LoginScreen` exibe os três botões e o campo de e-mail (escrito e compila; `connectedDebugAndroidTest` pendente de device)
+  - [x] (instrumentado) `LoginScreen` exibe os três botões e o campo de e-mail (`connectedDebugAndroidTest` verde no emulador)
 
 ### Fase 0.B — Temas via Firestore com cache offline
 > Dependências: Fase 0.A (Firestore exige `request.auth != null`)
@@ -95,13 +95,13 @@
   - [x] `documentoParaThemeConfig("Cotidiano", [rodadaValida])` → `ThemeConfig` com o tema e 1 rodada
   - [x] `documentoParaThemeConfig("Cotidiano", null)` → `null` (doc sem `rodadas` é descartado)
   - [x] `documentoParaThemeConfig("", [rodadaValida])` → `null` (tema vazio, §5)
-  - [x] (instrumentado) sem rede, `observarTemas()` emite os temas gravados no cache do Room (escrito e compila; `connectedDebugAndroidTest` pendente de device)
+  - [x] (instrumentado) sem rede, `observarTemas()` emite os temas gravados no cache do Room (`connectedDebugAndroidTest` verde no emulador)
 
 ### Gate da Sprint 0
 - [x] `./gradlew testDebugUnitTest` verde — 31 testes (sorteio/validação, mappers e ViewModels; inclui `ValidarCredenciaisUseCase`, `LoginViewModel` e `FirestoreThemeMapper`).
 - [x] `./gradlew assembleDebug` verde com `google-services.json` presente; [x] `assembleDebugAndroidTest` compila os instrumentados.
-- [ ] (Com device) login Google e e-mail/senha funcionam e os temas do Firestore aparecem; em modo avião, aparecem os do cache. — **pendente de device + config no console Firebase**.
-- **Status:** Fases 0.0, 0.A e 0.B com código concluído e gates de terminal verdes. Pendências externas: (1) config manual no console Firebase (habilitar provedores Auth, `firebase_web_client_id`, Security Rules `request.auth != null`, criar collection `temas`); (2) device/emulador para `connectedDebugAndroidTest` e validação manual de login. Backlog do review: teste de `MIGRATION_1_2` com `MigrationTestHelper` (exige `exportSchema=true`).
+- [x] (Com device) login Google e e-mail/senha funcionam e os temas do Firestore aparecem; em modo avião, aparecem os do cache. — **validado em device em 2026-07-21** (config do Firebase Console concluída).
+- **Status:** **SPRINT 0 CONCLUÍDA (2026-07-21).** Fases 0.0, 0.A e 0.B com código pronto e todos os gates verdes: `testDebugUnitTest` (31), `assembleDebug`, `assembleDebugAndroidTest` e `connectedDebugAndroidTest` (5 instrumentados). Firebase configurado; login e temas do Firestore validados em device. Backlog não-bloqueante: (1) teste instrumentado E2E de navegação setup→pass_phone→game_play (será coberto pela Task 4.1 da Sprint 1); (2) teste de `MIGRATION_1_2` com `MigrationTestHelper` (exige `exportSchema=true`).
 
 ---
 

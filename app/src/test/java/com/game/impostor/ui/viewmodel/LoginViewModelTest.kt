@@ -91,4 +91,17 @@ class LoginViewModelTest {
 
         assertTrue(vm.uiState.value.autenticado)
     }
+
+    @Test
+    fun `valida se o usuario foi deslogado com sucesso`() = runTest {
+        val repo = FakeAuthRepository(usuarioAtual = "uid-789")
+        val vm = buildViewModel(repo)
+
+        vm.sair()
+        advanceUntilIdle()
+
+        assertFalse(vm.uiState.value.autenticado)
+        assertEquals("", vm.uiState.value.email)
+        assertEquals("", vm.uiState.value.senha)
+    }
 }

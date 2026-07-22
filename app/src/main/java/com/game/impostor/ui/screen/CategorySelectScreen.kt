@@ -74,9 +74,14 @@ fun CategorySelectScreen(
         )
     }
 
-    Column(modifier = Modifier.fillMaxSize().navigationBarsPadding().padding(horizontal = 20.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .navigationBarsPadding()
+        .padding(horizontal = 20.dp)) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 56.dp, bottom = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 56.dp, bottom = 24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -84,7 +89,9 @@ fun CategorySelectScreen(
                 fontFamily = FontFamily.Monospace,
                 color = SpyGreen,
                 fontSize = 13.sp,
-                modifier = Modifier.clickable { onBack() }.padding(end = 16.dp)
+                modifier = Modifier
+                    .clickable { onBack() }
+                    .padding(end = 16.dp)
             )
             Text(
                 "CANAIS DISPONÍVEIS",
@@ -134,7 +141,9 @@ fun CategorySelectScreen(
             shape = RoundedCornerShape(4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
             border = BorderStroke(1.dp, SpyGreen),
-            modifier = Modifier.fillMaxWidth().height(50.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
             onClick = onCreateNew
         ) {
             Text(
@@ -165,9 +174,14 @@ fun CategoryCard(
         colors = CardDefaults.cardColors(containerColor = bgColor),
         shape = RoundedCornerShape(4.dp),
         border = BorderStroke(1.dp, borderColor),
-        modifier = Modifier.fillMaxWidth().aspectRatio(1f).clickable { onSelect() }
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .clickable { onSelect() }
     ) {
-        Box(modifier = Modifier.fillMaxSize().padding(12.dp)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp)) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -203,7 +217,9 @@ fun CategoryCard(
                         fontFamily = FontFamily.Monospace,
                         fontSize = 11.sp,
                         color = SpyGreen,
-                        modifier = Modifier.clickable { onEditRequest() }.padding(4.dp)
+                        modifier = Modifier
+                            .clickable { onEditRequest() }
+                            .padding(4.dp)
                     )
                     Text(
                         "[X]",
@@ -211,7 +227,9 @@ fun CategoryCard(
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         color = SpyRed,
-                        modifier = Modifier.clickable { onDeleteRequest() }.padding(4.dp)
+                        modifier = Modifier
+                            .clickable { onDeleteRequest() }
+                            .padding(4.dp)
                     )
                 }
             }

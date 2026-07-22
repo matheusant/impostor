@@ -6,6 +6,8 @@ import com.game.impostor.domain.model.AuthResult
 import com.game.impostor.domain.repository.AuthRepository
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -47,6 +49,10 @@ class FirebaseAuthRepository @Inject constructor(
             val uid = resultado.user?.uid
             if (uid != null) AuthResult.Sucesso(uid)
             else AuthResult.Erro("Não foi possível identificar o usuário.")
+        } catch (_: FirebaseAuthInvalidCredentialsException) {
+            AuthResult.Erro("Credenciais inválidas.")
+        } catch (_: FirebaseAuthUserCollisionException) {
+            AuthResult.Erro("Esse email já está sendo usado.")
         } catch (e: Exception) {
             AuthResult.Erro(e.localizedMessage ?: "Falha na autenticação.")
         }
