@@ -1,12 +1,28 @@
 package com.game.impostor.ui.screen
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -14,7 +30,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.text.KeyboardOptions
 import com.game.impostor.ui.state.LoginUiState
 import com.game.impostor.ui.theme.SpyBlack
 import com.game.impostor.ui.theme.SpyGray
@@ -36,8 +51,14 @@ fun LoginScreen(
     onCadastrar: () -> Unit,
     onEntrarComGoogle: () -> Unit
 ) {
+    val focusManger = LocalFocusManager.current
     Column(
-        modifier = Modifier.fillMaxSize().padding(28.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(28.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = { focusManger.clearFocus() })
+            },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -79,7 +100,9 @@ fun LoginScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             shape = RoundedCornerShape(4.dp),
             colors = fieldColors,
-            modifier = Modifier.fillMaxWidth().testTag(LoginTestTags.CAMPO_EMAIL)
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(LoginTestTags.CAMPO_EMAIL)
         )
 
         Spacer(Modifier.height(12.dp))
@@ -93,7 +116,9 @@ fun LoginScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             shape = RoundedCornerShape(4.dp),
             colors = fieldColors,
-            modifier = Modifier.fillMaxWidth().testTag(LoginTestTags.CAMPO_SENHA)
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(LoginTestTags.CAMPO_SENHA)
         )
 
         if (state.erros.isNotEmpty()) {
@@ -116,10 +141,20 @@ fun LoginScreen(
             shape = RoundedCornerShape(4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = SpyGreen),
             enabled = !state.carregando,
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            onClick = onEntrar
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            onClick = {
+                onEntrar()
+                focusManger.clearFocus()
+            }
         ) {
-            Text("ENTRAR", color = SpyBlack, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
+            Text(
+                "ENTRAR",
+                color = SpyBlack,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Monospace
+            )
         }
 
         Spacer(Modifier.height(12.dp))
@@ -128,10 +163,20 @@ fun LoginScreen(
             shape = RoundedCornerShape(4.dp),
             border = BorderStroke(1.dp, SpyGreen),
             enabled = !state.carregando,
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            onClick = onCadastrar
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            onClick = {
+                onCadastrar()
+                focusManger.clearFocus()
+            }
         ) {
-            Text("CADASTRAR", color = SpyGreen, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
+            Text(
+                "CADASTRAR",
+                color = SpyGreen,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Monospace
+            )
         }
 
         Spacer(Modifier.height(12.dp))
@@ -140,10 +185,20 @@ fun LoginScreen(
             shape = RoundedCornerShape(4.dp),
             border = BorderStroke(1.dp, SpyTextWhite.copy(alpha = 0.5f)),
             enabled = !state.carregando,
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            onClick = onEntrarComGoogle
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            onClick = {
+                onEntrarComGoogle()
+                focusManger.clearFocus()
+            }
         ) {
-            Text("ENTRAR COM GOOGLE", color = SpyTextWhite, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
+            Text(
+                "ENTRAR COM GOOGLE",
+                color = SpyTextWhite,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Monospace
+            )
         }
 
         if (state.carregando) {

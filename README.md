@@ -4,7 +4,7 @@
 
 **Jogo de festa local para Android — descubra quem recebeu a pergunta diferente.**
 
-![Versão](https://img.shields.io/badge/vers%C3%A3o-1.1-00FF66?style=flat-square)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-1.2-00FF66?style=flat-square)
 ![Plataforma](https://img.shields.io/badge/Android-minSdk%2026-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)
@@ -44,6 +44,8 @@ recebeu a pergunta divergente** pelas respostas fora do padrão.
 5. **Debate** — todos respondem em uma palavra, por vez, e discutem para achar o infiltrado.
 6. **Reboot** — finalize a missão e recomece com um novo sorteio.
 
+> Para trocar de agente, toque em **`x SAIR`** na tela de triagem: a sessão é encerrada e o app volta ao login.
+
 ## 📸 Telas
 
 | Triagem de agentes | Diretriz secreta | Debate |
@@ -54,7 +56,9 @@ recebeu a pergunta divergente** pelas respostas fora do padrão.
 ## ✨ Funcionalidades
 
 - **Login de agente:** autenticação via **Firebase Auth** — Google e e-mail/senha —, com
-  validação de credenciais e sessão persistente.
+  validação de credenciais, mensagens de erro claras (credenciais inválidas, e-mail já
+  cadastrado) e sessão persistente. Dá para **encerrar a sessão** (`x SAIR`) a qualquer
+  momento na tela de triagem, voltando ao login.
 - **Canais na nuvem com cache offline:** os temas padrão vêm do **Cloud Firestore** e são
   espelhados no **Room**; sem rede, o app usa o cache (ou os canais embutidos nos assets).
 - **Setup rápido:** slider de 3 a 8 agentes e seleção do canal ativo.
