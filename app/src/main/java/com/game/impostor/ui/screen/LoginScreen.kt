@@ -55,10 +55,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(28.dp)
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = { focusManger.clearFocus() })
-            },
+            .padding(28.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

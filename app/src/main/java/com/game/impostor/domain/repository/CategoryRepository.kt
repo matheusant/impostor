@@ -10,4 +10,5 @@ interface CategoryRepository {
     suspend fun salvar(nome: String, rodadas: List<RoundData>)
     suspend fun atualizar(id: Int, nome: String, rodadas: List<RoundData>)
     suspend fun excluir(id: Int)
+    suspend fun iaSuggestion(categoryName: String) : List<RoundData>
 }

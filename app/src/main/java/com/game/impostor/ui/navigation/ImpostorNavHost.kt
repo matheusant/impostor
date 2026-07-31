@@ -1,8 +1,10 @@
 package com.game.impostor.ui.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,7 +14,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -53,6 +57,7 @@ fun ImpostorApp(
     categoryViewModel: CategoryViewModel = hiltViewModel(),
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
+    val focusManger = LocalFocusManager.current
     val navController = rememberNavController()
     val gameState by gameViewModel.uiState.collectAsState()
     val customCategories by categoryViewModel.categorias.collectAsState()
@@ -69,7 +74,12 @@ fun ImpostorApp(
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = Modifier.fillMaxSize().background(SpyBlack)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SpyBlack)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = { focusManger.clearFocus() })
+            }
     ) {
         composable(Routes.LOGIN) {
             val loginState by loginViewModel.uiState.collectAsState()
@@ -113,10 +123,11 @@ fun ImpostorApp(
                     if (webClientId.isBlank()) {
                         loginViewModel.reportarErro("Google Sign-In ainda não configurado (defina o web client id).")
                     } else {
-                        val opcoes = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken(webClientId)
-                            .requestEmail()
-                            .build()
+                        val opcoes =
+                            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestIdToken(webClientId)
+                                .requestEmail()
+                                .build()
                         val cliente = GoogleSignIn.getClient(context, opcoes)
                         googleLauncher.launch(cliente.signInIntent)
                     }
@@ -149,7 +160,12 @@ fun ImpostorApp(
                 customCategories = customCategories,
                 selectedCategory = gameState.selectedCategory,
                 onSelectRemote = { tema ->
-                    gameViewModel.selecionarCategoria(CategorySelection.Remote(tema.tema, tema.rodadas))
+                    gameViewModel.selecionarCategoria(
+                        CategorySelection.Remote(
+                            tema.tema,
+                            tema.rodadas
+                        )
+                    )
                     navController.popBackStack()
                 },
                 onSelectCustom = { cat ->
@@ -161,7 +177,11 @@ fun ImpostorApp(
                 onDeleteCustom = { id ->
                     val selecionada = gameState.selectedCategory
                     if (selecionada is CategorySelection.Custom && selecionada.id == id) {
-                        gameViewModel.selecionarCategoria(CategorySelection.Default(DEFAULT_CATEGORIES.first()))
+                        gameViewModel.selecionarCategoria(
+                            CategorySelection.Default(
+                                DEFAULT_CATEGORIES.first()
+                            )
+                        )
                     }
                     categoryViewModel.excluir(id)
                 },
@@ -175,17 +195,25 @@ fun ImpostorApp(
         }
 
         composable(Routes.CATEGORY_CREATE) {
+            val iaSuggestionState by categoryViewModel.uiState.collectAsState()
+            val handler = { categoryViewModel.clearIASuggestion(); navController.popBackStack() }
+            BackHandler { handler() }
             CategoryFormScreen(
                 initial = null,
                 onSave = { nome, rodadas ->
                     categoryViewModel.salvar(nome, rodadas)
-                    navController.popBackStack()
+                    handler()
                 },
-                onBack = { navController.popBackStack() }
+                iaSuggestion = categoryViewModel::iaSuggestion,
+                iaSuggestionState = iaSuggestionState,
+                onBack = {
+                    handler()
+                }
             )
         }
 
         composable(Routes.CATEGORY_EDIT) {
+            val iaSuggestionState by categoryViewModel.uiState.collectAsState()
             CategoryFormScreen(
                 initial = editing,
                 onSave = { nome, rodadas ->
@@ -205,6 +233,8 @@ fun ImpostorApp(
                     }
                     navController.popBackStack()
                 },
+                iaSuggestion = categoryViewModel::iaSuggestion,
+                iaSuggestionState = iaSuggestionState,
                 onBack = { navController.popBackStack() }
             )
         }

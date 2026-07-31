@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
 }
 
@@ -24,7 +25,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = dynamicVersionCode
-        versionName = "1.2"
+        versionName = "1.3"
 
         testInstrumentationRunner = "com.game.impostor.HiltTestRunner"
     }
@@ -49,6 +50,10 @@ android {
 
 dependencies {
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.ai)
+    implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.firebase.appcheck.debug)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
