@@ -1,8 +1,10 @@
 package com.game.impostor.di
 
 import com.game.impostor.data.repository.CategoryRepositoryImpl
+import com.game.impostor.data.repository.FirebaseAiDataSource
 import com.game.impostor.data.repository.FirebaseAuthRepository
 import com.game.impostor.data.repository.ThemeRepositoryImpl
+import com.game.impostor.domain.repository.AiDataSource
 import com.game.impostor.domain.repository.AuthRepository
 import com.game.impostor.domain.repository.CategoryRepository
 import com.game.impostor.domain.repository.ThemeRepository
@@ -26,4 +28,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindAuthRepository(impl: FirebaseAuthRepository): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAiDataSource(impl: FirebaseAiDataSource): AiDataSource
 }

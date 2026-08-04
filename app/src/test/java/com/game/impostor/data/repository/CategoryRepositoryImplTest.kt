@@ -5,6 +5,7 @@ import com.game.impostor.data.CustomCategoryEntity
 import com.game.impostor.data.CustomCategoryWithRounds
 import com.game.impostor.data.CustomRoundEntity
 import com.game.impostor.domain.model.RoundData
+import com.game.impostor.domain.repository.AiDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -31,22 +32,34 @@ class CategoryRepositoryImplTest {
             insertedCategories.add(category)
             return nextId++
         }
+
         override suspend fun insertRounds(rounds: List<CustomRoundEntity>) {
             insertedRounds.add(rounds)
         }
+
         override suspend fun deleteCategory(id: Int) {
             deletedCategoryIds.add(id)
         }
+
         override suspend fun updateCategoryName(id: Int, name: String) {
             updatedNames.add(id to name)
         }
+
         override suspend fun deleteRoundsForCategory(categoryId: Int) {
             deletedRoundsForCategory.add(categoryId)
         }
     }
 
-    private fun repo(dao: CategoryDao) =
-        CategoryRepositoryImpl(dao, UnconfinedTestDispatcher())
+    private class FakeAiDataSource(
+        var roundsToReturn: List<RoundData> = listOf()
+    ) : AiDataSource {
+        override suspend fun iaSuggestion(categoryName: String): List<RoundData> {
+            return roundsToReturn
+        }
+    }
+
+    private fun repo(dao: CategoryDao, aiDataSource: AiDataSource = FakeAiDataSource()) =
+        CategoryRepositoryImpl(dao, aiDataSource, UnconfinedTestDispatcher())
 
     @Test
     fun `observar mapeia entidade Room para modelo de dominio`() = runTest {
@@ -105,5 +118,17 @@ class CategoryRepositoryImplTest {
         repo(dao).excluir(9)
 
         assertEquals(listOf(9), dao.deletedCategoryIds)
+    }
+
+    @Test
+    fun `iaSuggestion deve retornar lista tratada vinda da AiDataSource`() = runTest {
+        val dao = FakeCategoryDao()
+        val categoryName = "NBA"
+        val expectedRounds = listOf(RoundData("g1", "i1"), RoundData("g2", "i2"))
+
+        val fakeAiRepo = FakeAiDataSource(roundsToReturn = expectedRounds)
+        val result = repo(dao, fakeAiRepo).iaSuggestion(categoryName)
+
+        assertEquals(expectedRounds, result)
     }
 }

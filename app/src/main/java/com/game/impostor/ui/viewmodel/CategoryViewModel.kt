@@ -1,6 +1,5 @@
 package com.game.impostor.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.game.impostor.domain.model.CategoriaCustom
@@ -59,7 +58,6 @@ class CategoryViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             val response = iaSuggestionRounds(categoryName)
             if (response.isNotEmpty()) _uiState.update { it.copy(isLoading = false, rounds = response) }
-            Log.d("AI", "resposta recebida $response")
         }
 
     fun clearIASuggestion() =
