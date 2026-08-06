@@ -4,11 +4,11 @@
 
 **Jogo de festa local para Android — descubra quem recebeu a pergunta diferente.**
 
-![Versão](https://img.shields.io/badge/vers%C3%A3o-1.2-00FF66?style=flat-square)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-1.3-00FF66?style=flat-square)
 ![Plataforma](https://img.shields.io/badge/Android-minSdk%2026-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-FFCA28?style=flat-square&logo=firebase&logoColor=black)
+![Firebase](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore%20%2B%20AI-FFCA28?style=flat-square&logo=firebase&logoColor=black)
 
 </div>
 
@@ -37,21 +37,23 @@ recebeu a pergunta divergente** pelas respostas fora do padrão.
 
 ## 🎮 Como jogar
 
-1. **Acesso** — autentique-se como agente (Google ou e-mail/senha). A sessão fica salva para as próximas partidas.
+1. **Acesso** — autentique-se como agente (Google ou e-mail/senha). A sessão fica salva para as
+   próximas partidas.
 2. **Setup** — escolha o número de agentes (3 a 8) e o canal (categoria).
 3. **Transmissão** — o app sorteia o impostor e uma rodada.
 4. **Passa-telefone** — cada agente lê sua diretriz em segredo e passa o aparelho.
 5. **Debate** — todos respondem em uma palavra, por vez, e discutem para achar o infiltrado.
 6. **Reboot** — finalize a missão e recomece com um novo sorteio.
 
-> Para trocar de agente, toque em **`x SAIR`** na tela de triagem: a sessão é encerrada e o app volta ao login.
+> Para trocar de agente, toque em **`x SAIR`** na tela de triagem: a sessão é encerrada e o app
+> volta ao login.
 
 ## 📸 Telas
 
-| Triagem de agentes | Diretriz secreta | Debate |
-|:---:|:---:|:---:|
+|              Triagem de agentes              |                      Diretriz secreta                      |                     Debate                     |
+|:--------------------------------------------:|:----------------------------------------------------------:|:----------------------------------------------:|
 | ![Tela de setup](docs/screenshots/setup.png) | ![Revelação do infiltrado](docs/screenshots/revelacao.png) | ![Tela de debate](docs/screenshots/debate.png) |
-| Escolha de agentes e canal | O infiltrado recebe a pergunta divergente | Interrogatório em andamento |
+|          Escolha de agentes e canal          |         O infiltrado recebe a pergunta divergente          |          Interrogatório em andamento           |
 
 ## ✨ Funcionalidades
 
@@ -64,6 +66,11 @@ recebeu a pergunta divergente** pelas respostas fora do padrão.
 - **Setup rápido:** slider de 3 a 8 agentes e seleção do canal ativo.
 - **Categorias customizadas:** crie as suas (nome + rodadas `grupo`/`impostor`), com criação,
   edição e exclusão — persistidas localmente via **Room**.
+- **Gerador de perguntas com IA:** ao criar um novo canal customizado, use o recurso **Sugestões de
+  IA**
+  (powered by **Firebase AI / Gemini 3.1 Flash Lite**) para gerar automaticamente 5 rodadas de
+  perguntas
+  divergentes ajustadas ao tema desejado.
 - **Sorteio justo:** exatamente **um** impostor e **uma** rodada aleatória por partida.
 - **Revelação sigilosa por jogador:** o texto só aparece depois de decodificar; verde =
   canal seguro (grupo), vermelho = infiltrado (impostor).
@@ -74,10 +81,10 @@ recebeu a pergunta divergente** pelas respostas fora do padrão.
 
 Três canais embutidos, cada um com 5 rodadas:
 
-| Canal | Tema |
-|---|---|
-| **Cotidiano** | Rotina do dia a dia |
-| **Cultura Pop** | Filmes, séries, heróis e vilões |
+| Canal               | Tema                             |
+|---------------------|----------------------------------|
+| **Cotidiano**       | Rotina do dia a dia              |
+| **Cultura Pop**     | Filmes, séries, heróis e vilões  |
 | **Relacionamentos** | Encontros, presentes e situações |
 
 Novas categorias padrão são arquivos JSON em [`app/src/main/assets/`](app/src/main/assets/)
@@ -88,13 +95,13 @@ no formato `{ "tema": string, "rodadas": [ { "grupo": string, "impostor": string
 Identidade visual de **espionagem**: fonte monospace, rótulos como `AGENTE 0X`,
 `CANAL SEGURO` e `INSPEÇÃO DE SEGURANÇA`, e a paleta neon sobre fundo escuro:
 
-| Cor | Hex | Uso |
-|---|---|---|
-| 🟩 `SpyGreen` | `#00FF66` | canal seguro / grupo / acento principal |
-| 🟥 `SpyRed` | `#FF3333` | alerta / impostor / infiltrado |
-| ⬛ `SpyBlack` | `#0D0F12` | fundo |
-| ▪️ `SpyGray` | `#1A1F26` | cartões / superfícies |
-| ⬜ `SpyTextWhite` | `#E2E8F0` | texto |
+| Cor              | Hex       | Uso                                     |
+|------------------|-----------|-----------------------------------------|
+| 🟩 `SpyGreen`    | `#00FF66` | canal seguro / grupo / acento principal |
+| 🟥 `SpyRed`      | `#FF3333` | alerta / impostor / infiltrado          |
+| ⬛ `SpyBlack`     | `#0D0F12` | fundo                                   |
+| ▪️ `SpyGray`     | `#1A1F26` | cartões / superfícies                   |
+| ⬜ `SpyTextWhite` | `#E2E8F0` | texto                                   |
 
 ## 🛠️ Stack técnica
 
@@ -102,7 +109,7 @@ Identidade visual de **espionagem**: fonte monospace, rótulos como `AGENTE 0X`,
 - **UI:** Jetpack Compose (BOM `2026.02.01`) + Material 3 + Navigation-Compose
 - **Arquitetura:** Clean Architecture + MVVM (`domain` / `data` / `di` / `ui`)
 - **DI:** Hilt `2.59.2` via KSP
-- **Nuvem:** Firebase Auth + Cloud Firestore (Google Sign-In via `play-services-auth`)
+- **Nuvem:** Firebase Auth + Cloud Firestore + Firebase AI (Google Sign-In via `play-services-auth`)
 - **Persistência local:** Room `2.7.1` via KSP (categorias customizadas + cache de temas)
 - **Build:** Android Gradle Plugin `9.2.1`, Gradle `9.4.1`
 - **SDK:** `minSdk 26` · `targetSdk 36` · `compileSdk 36`
@@ -111,7 +118,8 @@ Identidade visual de **espionagem**: fonte monospace, rótulos como `AGENTE 0X`,
 
 ## 🚀 Como compilar e instalar
 
-**Pré-requisitos:** JDK 11+, Android SDK 36 e um device/emulador com Android 8.0 (API 26) ou superior.
+**Pré-requisitos:** JDK 11+, Android SDK 36 e um device/emulador com Android 8.0 (API 26) ou
+superior.
 
 > **Firebase:** o login e os temas na nuvem exigem um projeto Firebase configurado — um
 > `app/google-services.json` válido (não versionado), provedores de Auth (Google + e-mail/senha)
@@ -119,11 +127,11 @@ Identidade visual de **espionagem**: fonte monospace, rótulos como `AGENTE 0X`,
 > `app/src/main/res/values/strings.xml` e as Security Rules do Firestore exigindo
 > `request.auth != null`. Sem isso, o app compila normalmente, mas o login não conclui.
 
-| Objetivo | PowerShell | bash |
-|---|---|---|
-| Compilar o APK debug | `.\gradlew.bat assembleDebug` | `./gradlew assembleDebug` |
-| Rodar os testes unitários | `.\gradlew.bat testDebugUnitTest` | `./gradlew testDebugUnitTest` |
-| Instalar no device/emulador | `adb install -r app/build/outputs/apk/debug/app-debug.apk` | idem |
+| Objetivo                    | PowerShell                                                 | bash                          |
+|-----------------------------|------------------------------------------------------------|-------------------------------|
+| Compilar o APK debug        | `.\gradlew.bat assembleDebug`                              | `./gradlew assembleDebug`     |
+| Rodar os testes unitários   | `.\gradlew.bat testDebugUnitTest`                          | `./gradlew testDebugUnitTest` |
+| Instalar no device/emulador | `adb install -r app/build/outputs/apk/debug/app-debug.apk` | idem                          |
 
 O APK gerado fica em `app/build/outputs/apk/debug/app-debug.apk`.
 
@@ -137,7 +145,8 @@ Planejado (ainda **não** implementado):
 ## 🔒 Privacidade
 
 Linha_Cruzada **não tem anúncios, analytics nem telemetria**. A única permissão é `INTERNET`,
-usada **exclusivamente** para o Firebase Auth (login) e a leitura de temas no Cloud Firestore.
+usada **exclusivamente** para o Firebase Auth (login), a leitura de temas no Cloud Firestore e as
+sugestões do Firebase AI.
 O estado das partidas e as categorias que você cria **ficam no aparelho** (Room) — nenhum dado
 de jogo é enviado para a nuvem.
 
