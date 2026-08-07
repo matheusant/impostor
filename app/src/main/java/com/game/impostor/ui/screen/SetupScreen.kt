@@ -1,6 +1,5 @@
 package com.game.impostor.ui.screen
 
-import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,17 +21,19 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.game.impostor.domain.model.DefaultCategory
+import com.game.impostor.ui.components.dialogs.ImpostorAlertDialog
 import com.game.impostor.ui.state.CategorySelection
-import com.game.impostor.ui.theme.ImpostorTheme
 import com.game.impostor.ui.theme.SpyBlack
 import com.game.impostor.ui.theme.SpyGray
 import com.game.impostor.ui.theme.SpyGreen
@@ -47,6 +48,8 @@ fun SetupScreen(
     onStart: () -> Unit,
     onSair: () -> Unit
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,8 +62,17 @@ fun SetupScreen(
             fontFamily = FontFamily.Monospace,
             color = SpyGreen,
             fontSize = 13.sp,
-            modifier = Modifier.clickable { onSair() }
+            modifier = Modifier.clickable { showDialog = true }
         )
+        if (showDialog) {
+            ImpostorAlertDialog(
+                title = "ABANDONAR OPERAÇÃO",
+                bodyText = "Deseja abandonar a operação atual?",
+                onConfirm = { onSair(); showDialog = false },
+                confirmText = "ABANDONAR",
+                onDismiss = { showDialog = false },
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()

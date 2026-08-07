@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.game.impostor.domain.model.CategoriaCustom
 import com.game.impostor.domain.model.ThemeConfig
+import com.game.impostor.ui.components.dialogs.ImpostorAlertDialog
 import com.game.impostor.ui.state.CategorySelection
 import com.game.impostor.ui.theme.SpyGray
 import com.game.impostor.ui.theme.SpyGreen
@@ -41,36 +42,12 @@ fun CategorySelectScreen(
     var deleteConfirmId by remember { mutableStateOf<Int?>(null) }
 
     if (deleteConfirmId != null) {
-        AlertDialog(
-            onDismissRequest = { deleteConfirmId = null },
-            containerColor = SpyGray,
-            title = {
-                Text(
-                    "CONFIRMAR EXCLUSÃO",
-                    fontFamily = FontFamily.Monospace,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    color = SpyRed
-                )
-            },
-            text = {
-                Text(
-                    "Deseja remover este canal permanentemente?",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 13.sp,
-                    color = SpyTextWhite
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = { onDeleteCustom(deleteConfirmId!!); deleteConfirmId = null }) {
-                    Text("CONFIRMAR", color = SpyRed, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { deleteConfirmId = null }) {
-                    Text("CANCELAR", color = SpyTextWhite.copy(alpha = 0.7f), fontFamily = FontFamily.Monospace)
-                }
-            }
+        ImpostorAlertDialog(
+            title = "CONFIRMAR EXCLUSÃO",
+            bodyText = "Deseja remover este canal permanentemente?",
+            onConfirm = { onDeleteCustom(deleteConfirmId!!); deleteConfirmId = null },
+            confirmText = "CONFIRMAR",
+            onDismiss = { deleteConfirmId = null }
         )
     }
 
