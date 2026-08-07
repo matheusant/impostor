@@ -1,9 +1,9 @@
 package com.game.impostor.di
 
 import android.content.Context
-import com.game.impostor.data.AppDatabase
-import com.game.impostor.data.CategoryDao
-import com.game.impostor.data.RemoteThemeDao
+import com.game.impostor.data.local.AppDatabase
+import com.game.impostor.data.local.dao.CategoryDao
+import com.game.impostor.data.local.dao.RemoteThemeDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

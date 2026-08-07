@@ -1,5 +1,6 @@
 package com.game.impostor.domain.usecase
 
+import com.game.impostor.domain.usecase.game.SortearImpostorUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

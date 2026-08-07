@@ -1,9 +1,9 @@
 package com.game.impostor.data.repository
 
-import com.game.impostor.data.CategoryDao
-import com.game.impostor.data.CustomCategoryEntity
-import com.game.impostor.data.CustomCategoryWithRounds
-import com.game.impostor.data.CustomRoundEntity
+import com.game.impostor.data.local.dao.CategoryDao
+import com.game.impostor.data.local.entity.CustomCategoryEntity
+import com.game.impostor.data.local.entity.CustomCategoryWithRounds
+import com.game.impostor.data.local.entity.CustomRoundEntity
 import com.game.impostor.domain.model.RoundData
 import com.game.impostor.domain.repository.AiDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi

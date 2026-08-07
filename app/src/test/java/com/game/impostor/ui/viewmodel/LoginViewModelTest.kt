@@ -3,7 +3,8 @@ package com.game.impostor.ui.viewmodel
 import com.game.impostor.MainDispatcherRule
 import com.game.impostor.domain.model.AuthResult
 import com.game.impostor.domain.repository.AuthRepository
-import com.game.impostor.domain.usecase.ValidarCredenciaisUseCase
+import com.game.impostor.domain.usecase.auth.ValidarCredenciaisUseCase
+import com.game.impostor.ui.features.auth.LoginViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest

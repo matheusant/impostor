@@ -1,11 +1,11 @@
 package com.game.impostor.data.repository
 
 import android.content.Context
-import com.game.impostor.data.RemoteRoundEntity
-import com.game.impostor.data.RemoteThemeDao
-import com.game.impostor.data.RemoteThemeEntity
-import com.game.impostor.data.RemoteThemeWithRounds
-import com.game.impostor.data.awaitResult
+import com.game.impostor.data.local.entity.RemoteRoundEntity
+import com.game.impostor.data.local.dao.RemoteThemeDao
+import com.game.impostor.data.local.entity.RemoteThemeEntity
+import com.game.impostor.data.local.entity.RemoteThemeWithRounds
+import com.game.impostor.data.remote.awaitResult
 import com.game.impostor.data.mapper.ThemeJsonParser
 import com.game.impostor.data.remote.FirestoreThemeMapper
 import com.game.impostor.di.IoDispatcher

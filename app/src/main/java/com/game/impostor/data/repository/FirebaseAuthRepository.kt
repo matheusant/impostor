@@ -1,6 +1,6 @@
 package com.game.impostor.data.repository
 
-import com.game.impostor.data.awaitResult
+import com.game.impostor.data.remote.awaitResult
 import com.game.impostor.di.IoDispatcher
 import com.game.impostor.domain.model.AuthResult
 import com.game.impostor.domain.repository.AuthRepository
@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * Implementação de [AuthRepository] sobre [FirebaseAuth].
+ * Implementação de [com.game.impostor.domain.repository.AuthRepository] sobre [com.google.firebase.auth.FirebaseAuth].
  * Converte os `Task` do Firebase em `suspend` sem depender de
  * `kotlinx-coroutines-play-services` (interop manual via [awaitResult]).
  */

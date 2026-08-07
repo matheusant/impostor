@@ -1,6 +1,7 @@
 package com.game.impostor.domain.usecase
 
 import com.game.impostor.domain.model.RoundData
+import com.game.impostor.domain.usecase.game.SortearRodadaUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test

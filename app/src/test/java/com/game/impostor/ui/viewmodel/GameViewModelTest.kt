@@ -7,8 +7,9 @@ import com.game.impostor.domain.model.RoundData
 import com.game.impostor.domain.model.ThemeConfig
 import com.game.impostor.domain.repository.ThemeRepository
 import com.game.impostor.domain.usecase.ObservarTemasUseCase
-import com.game.impostor.domain.usecase.SortearImpostorUseCase
-import com.game.impostor.domain.usecase.SortearRodadaUseCase
+import com.game.impostor.domain.usecase.game.SortearImpostorUseCase
+import com.game.impostor.domain.usecase.game.SortearRodadaUseCase
+import com.game.impostor.ui.features.gameplay.GameViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -34,7 +35,12 @@ class GameViewModelTest {
 
     private fun buildViewModel(rodadas: List<RoundData> = listOf(RoundData("g", "i"))): GameViewModel {
         val repo = FakeThemeRepository(rodadas)
-        return GameViewModel(repo, ObservarTemasUseCase(repo), SortearImpostorUseCase(), SortearRodadaUseCase())
+        return GameViewModel(
+            repo,
+            ObservarTemasUseCase(repo),
+            SortearImpostorUseCase(),
+            SortearRodadaUseCase()
+        )
     }
 
     @Test

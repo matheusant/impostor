@@ -4,9 +4,9 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import com.game.impostor.ui.screen.LoginScreen
-import com.game.impostor.ui.screen.LoginTestTags
-import com.game.impostor.ui.state.LoginUiState
+import com.game.impostor.ui.features.auth.LoginScreen
+import com.game.impostor.ui.features.auth.LoginTestTags
+import com.game.impostor.ui.features.auth.LoginUiState
 import org.junit.Rule
 import org.junit.Test
 

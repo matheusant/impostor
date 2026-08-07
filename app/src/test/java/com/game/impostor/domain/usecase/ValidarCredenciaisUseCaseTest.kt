@@ -1,6 +1,7 @@
 package com.game.impostor.domain.usecase
 
 import com.game.impostor.domain.model.CredsValidationResult
+import com.game.impostor.domain.usecase.auth.ValidarCredenciaisUseCase
 import org.junit.Assert.assertTrue
 import org.junit.Test
 

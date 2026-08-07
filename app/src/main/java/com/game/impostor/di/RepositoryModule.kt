@@ -1,7 +1,7 @@
 package com.game.impostor.di
 
 import com.game.impostor.data.repository.CategoryRepositoryImpl
-import com.game.impostor.data.repository.FirebaseAiDataSource
+import com.game.impostor.data.remote.FirebaseAiDataSource
 import com.game.impostor.data.repository.FirebaseAuthRepository
 import com.game.impostor.data.repository.ThemeRepositoryImpl
 import com.game.impostor.domain.repository.AiDataSource

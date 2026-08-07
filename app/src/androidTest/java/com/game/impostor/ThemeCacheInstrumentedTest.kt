@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.game.impostor.data.AppDatabase
-import com.game.impostor.data.RemoteRoundEntity
-import com.game.impostor.data.RemoteThemeDao
-import com.game.impostor.data.RemoteThemeEntity
+import com.game.impostor.data.local.AppDatabase
+import com.game.impostor.data.local.entity.RemoteRoundEntity
+import com.game.impostor.data.local.dao.RemoteThemeDao
+import com.game.impostor.data.local.entity.RemoteThemeEntity
 import com.game.impostor.data.mapper.ThemeJsonParser
 import com.game.impostor.data.remote.FirestoreThemeMapper
 import com.game.impostor.data.repository.ThemeRepositoryImpl
